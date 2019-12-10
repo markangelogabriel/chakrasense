@@ -24,12 +24,20 @@
   },
   "homepage": "https://github.com/An-Idiots-Guide/guidebot#readme",
   "dependencies": {
+    "@discordjs/uws": "^11.149.1",
+    "better-sqlite-pool": "^0.2.2",
     "better-sqlite3": "^5.4.0",
+    "bufferutil": "^4.0.1",
     "chalk": "^2.4.2",
     "discord.js": "^11.5.1",
     "enmap": "^5.0.0",
+    "erlpack": "github:discordapp/erlpack",
     "inquirer": "^6.3.1",
+    "libsodium-wrappers": "^0.7.6",
     "moment": "^2.24.0",
-    "moment-duration-format": "^2.3.2"
+    "moment-duration-format": "^2.3.2",
+    "node-opus": "^0.3.3",
+    "opusscript": "0.0.7",
+    "sodium": "^3.0.2"
   }
 }
