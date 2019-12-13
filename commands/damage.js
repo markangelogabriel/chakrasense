@@ -165,5 +165,5 @@ exports.help = {
   name: "damage",
   category: "Naruto-Arena",
   description: "Gives you the damage you'll deal given your attacks and damage types against enemy resistances and HP",
-  usage: "damage 0110 3"
+  usage: "damage 20d 30p 10f 15dr 10drp 20dd 80hp"
 };
