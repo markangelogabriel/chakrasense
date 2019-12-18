@@ -21,12 +21,12 @@ const factorial = (num) => {
 };
 
 const sendHelp = (message) => {
-	message.channel.send(`= How to use ${message.settings.prefix}chakra = \nYou can predict chakra using the following format:\n\n${message.settings.prefix}chakra 1010 3 :: Probability that you will get at least one Taijutsu and one Ninjutsu chakra from a pool of 3 chakra\n${message.settings.prefix}chakra 0200 5 :: Probability that you will get at least 2 Bloodline chakra from a pool of 5 chakra`, {code: "asciidoc"});
+	message.channel.send(`= How to use ${message.settings.prefix}chakra = \nYou can predict chakra using the following format:\n\n${message.settings.prefix}chakra 1010 3 :: Probability that you will get at least one Taijutsu and one Ninjutsu chakra from a pool of 3 chakra\n${message.settings.prefix}chakra 0200 5 :: Probability that you will get at least 2 Bloodline chakra from a pool of 5 chakra\n${message.settings.prefix}chakra 0100|0001 5 :: Probability that you will get EITHER 1 Bloodline chakra OR (inclusive or) 1 Genjutsu chakra from a pool of 5 chakra`, {code: "asciidoc"});
 };
 
 /*
  * Calculation for chakra probability is done a posteriori, with a simulation size of SIMULATION_SIZE
- * chakraSearch: Array of length 4 containing numbers from 0-9
+ * chakraSearch: Array of length N containing Arrays of 4 numbers from 0-9
  * chakraGenerated: Number
  */
 
@@ -39,11 +39,17 @@ const chances = (chakraSearch, chakraGenerated) => {
 			chakraSample[Math.floor(Math.random()*4)]++;
 		}
 
-		//Check if chakraSample meets chakraSearch
-		if(chakraSample[0] >= chakraSearch[0] &&
-			chakraSample[1] >= chakraSearch[1] &&
-			chakraSample[2] >= chakraSearch[2] &&
-			chakraSample[3] >= chakraSearch[3]){
+		let meetsSearch = chakraSearch.some(item => {
+			//Check if chakraSample meets chakraSearch
+			if(chakraSample[0] >= item[0] &&
+				chakraSample[1] >= item[1] &&
+				chakraSample[2] >= item[2] &&
+				chakraSample[3] >= item[3]){
+				return true;
+			}
+		});
+
+		if(meetsSearch){
 			success++;
 		}
 	}
@@ -52,12 +58,13 @@ const chances = (chakraSearch, chakraGenerated) => {
 
 exports.run = (client, message, args, level) => {
   // If the wrong command is called, show correct format
-  if (!args[0] || args.length !==2 || args[0].length !==4) {
+  if (!args[0] || args.length !==2 || args[0].length < 4) {
     sendHelp(message);
   }
   else {
 		let chakraTotal = parseInt(args[1]);
-		let chakraSplitString = [];
+		let chakraSearch = args[0].split("|");
+		let chakraProcessed = [];
 
 		//Check if args[1] is a valid number
 		if(isNaN(chakraTotal)){
@@ -65,19 +72,26 @@ exports.run = (client, message, args, level) => {
 			return false;
 		}
 
-		for(let i=0;i<4;i++){
-			let num = parseInt(args[0][i]);
-			//If even one char is not a valid number, fail
-			if(isNaN(num)){
-				sendHelp(message);
-				return false;
-			}
-			else{
-				chakraSplitString.push(num);
-			}
-		}
+		chakraSearch.forEach(item => {
+			let chakraSplitString = [];
 
-	  message.channel.send(`The estimated probability of getting ${args[0]} from ${args[1]} chakra is ${Math.round(chances(args[0], chakraTotal)*10000)/100}%.`, {code: "asciidoc"});
+			for(let i=0;i<4;i++){
+				let num = parseInt(item[i]);
+
+				if(isNaN(num)){
+
+					sendHelp(message);
+					return false;
+				}
+				else{
+					chakraSplitString.push(num);
+				}
+			}
+
+			chakraProcessed.push(chakraSplitString);
+		});
+
+	  message.channel.send(`The estimated probability of getting ${args[0]} from ${args[1]} chakra is ${Math.round(chances(chakraProcessed, chakraTotal)*10000)/100}%.`, {code: "asciidoc"});
   }
 };
 
