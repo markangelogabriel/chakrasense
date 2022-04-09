@@ -34,7 +34,7 @@
     "erlpack": "github:discordapp/erlpack",
     "inquirer": "^6.3.1",
     "libsodium-wrappers": "^0.7.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "moment-duration-format": "^2.3.2",
     "node-opus": "^0.3.3",
     "opusscript": "0.0.7",
